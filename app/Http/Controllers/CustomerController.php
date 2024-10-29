@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
+use Symfony\Component\HttpFoundation\Response;
 use PHPUnit\Framework\MockObject\Stub\ReturnReference;
 
 class CustomerController extends Controller
@@ -38,6 +40,15 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $customer = new Customer();
+
+        $customer->name    = $request->name;
+        $customer->mail    = $request->mail;
+        $customer->zipcode = $request->zipcode;
+        $customer->address = $request->address;
+        $customer->tel     = $request->tel;
+        
+        $customer->save();
+        return redirect()->route('customers.index');
     }
 
     /**
@@ -91,5 +102,29 @@ class CustomerController extends Controller
     {
         $customer->delete();
         return redirect()->route('customers.index');
+    }
+
+    public function search(Request $request)  
+    {
+        $method = 'GET';
+        $zipcode = $request->input('zipcode');
+        $url = config('zipcloud.url') . '/api/search?zipcode=' . $zipcode;
+
+        $client = new Client();
+        try {
+            $response = $client->request($method, $url);
+            $statuCode = $response->getStatusCode();
+
+        if ($statuCode == Response::HTTP_OK) {
+            $body = $response->getBody();
+            $results = json_decode($body, false);
+            }
+        } catch (\Throwable $th) {
+            return null;
+        }
+        $address =  $results->results[0]->address1 .
+                    $results->results[0]->address2 .
+                    $results->results[0]->address3;
+        return view('customers.search')->with(compact('results', 'address'));
     }
 }
