@@ -12,3 +12,8 @@ th, td {
 .button-area button {
     display: block;
 }
+
+/* エラーメッセージ */
+.error {
+    color: red;
+}
