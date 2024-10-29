@@ -1,0 +1,14 @@
+@charset "uft-8";
+
+/* index.blade.php */
+.table {
+    border: double black;
+}
+th, td {
+    border: double black;
+}
+
+/* edit.blade.php */
+.button-area button {
+    display: block;
+}
