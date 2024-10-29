@@ -4,6 +4,13 @@
 
 @section('content')
     <h1>郵便番号検索画面</h1>
+    @if ($errors->any())
+        <div class="error">
+            <ul>
+                <li>{{ $errors->first('zipcode') }}</li>
+            </ul>
+        </div>
+    @endif
     <form action="{{ route('customers.search') }}" method="get">
     <div>
         <label for="zipcode">郵便番号検索</label>

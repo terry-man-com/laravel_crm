@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Http\Requests\CustomerRequest;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,7 +38,7 @@ class CustomerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CustomerRequest $request)
     {
         $customer = new Customer();
 
@@ -80,7 +81,7 @@ class CustomerController extends Controller
      * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Customer $customer)
+    public function update(CustomerRequest $request, Customer $customer)
     {
         $customer->name    = $request->name;
         $customer->mail    = $request->mail;
@@ -106,7 +107,10 @@ class CustomerController extends Controller
 
     public function search(Request $request)  
     {
-        $method = 'GET';
+        $request->validate([
+            'zipcode' => 'required'
+        ]);
+        $method = 'get';
         $zipcode = $request->input('zipcode');
         $url = config('zipcloud.url') . '/api/search?zipcode=' . $zipcode;
 

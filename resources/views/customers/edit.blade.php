@@ -4,7 +4,18 @@
 
 @section('content')
     <h1>編集画面</h1>
-
+    @if ($errors->any())
+        <div class="error">
+            <p>
+                <b>{{ count($errors) }}件のエラーがあります。</b>
+            </p>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <form action="{{ route('customers.update', $customer) }}" method="post">
         @csrf
         @method('PUT')
@@ -13,8 +24,8 @@
             <input type="text" id="name" name="name" value="{{ old('name', $customer->name) }}">
         </div>
         <div>
-            <label for="mail">メールアドレス</label>
-            <input type="text" id="mail" name="mail" value="{{ old('mail', $customer->mail) }}">
+            <label for="email">メールアドレス</label>
+            <input type="email" id="email" name="mail" value="{{ old('mail', $customer->mail) }}">
         </div>
         <div>
             <label for="zipcode">郵便番号</label>
